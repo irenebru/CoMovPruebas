@@ -4,5 +4,6 @@
     <string name="Segunda_actividad">Segunda actividad</string>
     <string name="buttonchange">Boton</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="BotonMapa">Open Map</string>
 
 </resources>

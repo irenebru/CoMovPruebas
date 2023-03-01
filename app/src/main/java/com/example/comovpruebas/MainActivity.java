@@ -29,4 +29,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this,TelephonyActivity.class);
         startActivity(intent);
     }
+    public void onPressedButton1(View v) {
+        openMapsActivity(v);
+    }
 }
