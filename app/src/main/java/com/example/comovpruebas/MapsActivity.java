@@ -50,6 +50,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 location = locationResult.getLastLocation();
+                Circle cirlce = mMap.addCircle(new CircleOptions()
+                        .center(new LatLng(location.getLatitude(),location.getLongitude()))
+                        .radius(1)
+                        .strokeColor(Color.WHITE)
+                        .fillColor(Color.BLUE));
 
             }
         };
@@ -74,11 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         showPosition();
         showLocationUpdate();
-        Circle cirlce = mMap.addCircle(new CircleOptions()
-                .center(new LatLng(location.getLatitude(),location.getLongitude()))
-                .radius(1)
-                .strokeColor(Color.WHITE)
-                .fillColor(Color.BLUE));
+
     }
 
     private void showPosition() {
@@ -120,5 +121,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         super.onPause();
         client.removeLocationUpdates(callback);
+    }
+    protected void onResume() {
+
+        super.onResume();
+        if(client!=null){
+            showLocationUpdate();
+        }
     }
 }
