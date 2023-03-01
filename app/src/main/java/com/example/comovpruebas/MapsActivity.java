@@ -74,6 +74,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         showPosition();
         showLocationUpdate();
+        Circle cirlce = mMap.addCircle(new CircleOptions()
+                .center(new LatLng(location.getLatitude(),location.getLongitude()))
+                .radius(1)
+                .strokeColor(Color.WHITE)
+                .fillColor(Color.BLUE));
     }
 
     private void showPosition() {
@@ -108,11 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         client.requestLocationUpdates(locationRequest, callback, null);
-        Circle cirlce = mMap.addCircle(new CircleOptions()
-                .center(new LatLng(location.getLatitude(),location.getLongitude()))
-                .radius(1)
-                .strokeColor(Color.WHITE)
-                .fillColor(Color.BLUE));
+
 
     }
     protected void onPause() {
