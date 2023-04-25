@@ -5,6 +5,8 @@
     <string name="buttonchange">Boton</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="BotonMapa">Open Map</string>
-    <string name="Antenna">Antena</string>
+    <string name="Antenna">Antenna</string>
+    <string name="Stage">New Stage</string>
+    <string name="Toast">New stage created. Now in stage</string>
 
 </resources>

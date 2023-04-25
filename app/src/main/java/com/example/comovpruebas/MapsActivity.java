@@ -58,6 +58,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int g;
     private int b;
 
+    private int stage;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(binding.getRoot());
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         queue = Volley.newRequestQueue(this);
-
+        stage =0;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -103,10 +106,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         break;
                 }
                 location = locationResult.getLastLocation();
+                int color;
+                if(stage%2==0)color=Color.WHITE;
+                else color=Color.BLACK;
                 Circle cirlce = mMap.addCircle(new CircleOptions()
                         .center(new LatLng(location.getLatitude(), location.getLongitude()))
                         .radius(5)
-                        .strokeColor(Color.WHITE)
+                        .strokeColor(color)
                         .fillColor(Color.rgb(r, g, b)));
 
 
@@ -189,6 +195,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public void onStagePressed(View v){
+        nextStage();
+        String toast = getResources().getString(R.string.Toast)+": "+stage;
+        Toast.makeText(MapsActivity.this,toast,Toast.LENGTH_SHORT).show();
+        return;
+    }
+    private void nextStage(){
+        stage++;
+        return;
+    }
+
+
     public int CellInfo() {
         StringBuilder text = new StringBuilder();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -251,6 +269,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
         queue.add(jsonObjectRequest);
         }
+
+
 }
 
 
