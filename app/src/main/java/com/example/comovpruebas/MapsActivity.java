@@ -69,7 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(binding.getRoot());
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         queue = Volley.newRequestQueue(this);
-        stage =0;
+        stage =1;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -107,11 +107,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 location = locationResult.getLastLocation();
                 int color;
-                if(stage%2==0)color=Color.WHITE;
-                else color=Color.BLACK;
+                if(stage%2==0)color=Color.BLACK;
+                else color=Color.WHITE;
                 Circle cirlce = mMap.addCircle(new CircleOptions()
                         .center(new LatLng(location.getLatitude(), location.getLongitude()))
-                        .radius(5)
+                        .radius(25)
                         .strokeColor(color)
                         .fillColor(Color.rgb(r, g, b)));
 
@@ -170,7 +170,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void showLocationUpdate() {
-        LocationRequest locationRequest = new LocationRequest.Builder(2000).setMinUpdateDistanceMeters(10).setMinUpdateIntervalMillis(1000).setPriority(Priority.PRIORITY_HIGH_ACCURACY).build();
+        LocationRequest locationRequest = new LocationRequest.Builder(2000).setMinUpdateDistanceMeters(50).setMinUpdateIntervalMillis(1000).setPriority(Priority.PRIORITY_HIGH_ACCURACY).build();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
 
