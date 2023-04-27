@@ -8,5 +8,8 @@
     <string name="BotonMapa">Abrir Mapa</string>
     <string name="Antenna">Antena</string>
     <string name="Stage">Nueva Etapa</string>
-    <string name="Toast">Nueva Etapa creada. Estás en la etapa</string>
+    <string name="ToastStage">Nueva Etapa creada. Estás en la etapa</string>
+    <string name="Store">Guardar Datos</string>
+    <string name="ToastStore">Datos guardados</string>
+
 </resources>

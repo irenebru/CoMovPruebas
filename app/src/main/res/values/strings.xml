@@ -7,6 +7,8 @@
     <string name="BotonMapa">Open Map</string>
     <string name="Antenna">Antenna</string>
     <string name="Stage">New Stage</string>
-    <string name="Toast">New stage created. Now in stage</string>
+    <string name="ToastStage">New stage created. Now in stage</string>
+    <string name="Store">Store Data</string>
+    <string name="ToastStore">Data stored</string>
 
 </resources>

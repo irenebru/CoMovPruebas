@@ -15,6 +15,7 @@ import android.telephony.CellIdentityLte;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoLte;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -43,7 +44,12 @@ import com.example.comovpruebas.databinding.ActivityMapsBinding;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
+import com.example.comovpruebas.DataPoint;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -60,6 +66,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private int stage;
 
+    private int idpoint;
+
+    private int currentmnc;
+    private int currentmcc;
+    private int currentlac;
+    private int currentcellid;
+
+    private int currentsignal;
+
+    private static final String FILENAME="datapoints.json";
+
+    private List<DataPoint> listdatapoints;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +89,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         queue = Volley.newRequestQueue(this);
         stage =1;
+        idpoint = 0;
+        currentcellid = 0;
+        currentlac = 0;
+        currentmcc = 0;
+        currentmnc = 0;
+        listdatapoints = new LinkedList<>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -78,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                switch (CellInfo()) {
+                switch (currentsignal = CellInfo()) {
                     case 0:
                         r = 204;
                         g = 255;
@@ -109,6 +134,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 int color;
                 if(stage%2==0)color=Color.BLACK;
                 else color=Color.WHITE;
+                idpoint++;
+                listdatapoints.add(new DataPoint(idpoint,currentsignal,stage,currentmnc,currentmcc,currentlac,currentcellid));
                 Circle cirlce = mMap.addCircle(new CircleOptions()
                         .center(new LatLng(location.getLatitude(), location.getLongitude()))
                         .radius(25)
@@ -197,7 +224,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onStagePressed(View v){
         nextStage();
-        String toast = getResources().getString(R.string.Toast)+": "+stage;
+        String toast = getResources().getString(R.string.ToastStage)+": "+stage;
         Toast.makeText(MapsActivity.this,toast,Toast.LENGTH_SHORT).show();
         return;
     }
@@ -206,6 +233,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return;
     }
 
+    public void onStorePressed(View v){
+        JsonObject res=new JsonObject();
+        JsonArray datapointsArray=new JsonArray();
+        for(DataPoint d:listdatapoints){
+            datapointsArray.add(d.toJson());
+        }
+        res.add("datapoint",datapointsArray);
+        try {
+            StorageHelper.saveStringToFile(FILENAME,res.toString(),this);
+        } catch (IOException e) {
+            Log.e("MainActivity","Error saving file: ",e);
+        }
+        String toast = getResources().getString(R.string.ToastStore)+": "+stage;
+        Toast.makeText(MapsActivity.this,toast,Toast.LENGTH_SHORT).show();
+        return;
+    }
 
     public int CellInfo() {
         StringBuilder text = new StringBuilder();
@@ -234,6 +277,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // text.append("} Level: ").append(cellInfoLte.getCellSignalStrength().getLevel()).append("\n");
                 if (cellInfoLte.getCellSignalStrength().getLevel() > max)
                     max = cellInfoLte.getCellSignalStrength().getLevel();
+                    currentmnc = id.getMnc();
+                    currentmcc = id.getMcc();
+                    currentcellid = id.getCi();
+                    currentlac = id.getTac();
 
             }
             // textView.setText(text);
