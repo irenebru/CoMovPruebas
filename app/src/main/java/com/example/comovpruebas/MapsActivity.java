@@ -39,6 +39,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.Dash;
+import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.comovpruebas.databinding.ActivityMapsBinding;
@@ -50,6 +52,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import com.example.comovpruebas.DataPoint;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -74,8 +77,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int currentmcc;
     private int currentlac;
     private int currentcellid;
-
     private int currentsignal;
+
+    private int previouslac;
 
     private static final String FILENAME="datapoints.json";
 
@@ -100,6 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         currentlac = 0;
         currentmcc = 0;
         currentmnc = 0;
+        previouslac = 0;
         listdatapoints = new LinkedList<>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -141,11 +146,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(stage%2==0)color=Color.BLACK;
                 else color=Color.WHITE;
                 idpoint++;
+                List<PatternItem> patterns;
+                Gap gap = new Gap(20);
+                Dash dash = new Dash(20);
+                if(currentlac!=previouslac) {
+                    patterns = new LinkedList<>();
+                    patterns.add(dash);
+                    patterns.add(gap);
+                }
+                else patterns = null;
                 listdatapoints.add(new DataPoint(idpoint,currentsignal,stage,currentmnc,currentmcc,currentlac,currentcellid,tech));
                 Circle cirlce = mMap.addCircle(new CircleOptions()
                         .center(new LatLng(location.getLatitude(), location.getLongitude()))
                         .radius(25)
                         .strokeColor(color)
+                        .strokePattern(patterns)
                         .fillColor(Color.rgb(r, g, b)));
 
 
@@ -251,7 +266,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (IOException e) {
             Log.e("MainActivity","Error saving file: ",e);
         }
-        String toast = getResources().getString(R.string.ToastStore)+": "+stage;
+        String toast = getResources().getString(R.string.ToastStore);
         Toast.makeText(MapsActivity.this,toast,Toast.LENGTH_SHORT).show();
         return;
     }
@@ -267,7 +282,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         List<CellInfo> cellInfoList = telephonyManager.getAllCellInfo();
         //text.append("Found ").append(cellInfoList.size()).append(" cells\n");
         for (CellInfo info : cellInfoList) {
-            if ((tech == "LTE") & info instanceof CellInfoLte) {
+            if ((tech.equals("LTE")) & info instanceof CellInfoLte) {
                 CellInfoLte cellInfoLte = (CellInfoLte) info;
                 CellIdentityLte id = cellInfoLte.getCellIdentity();
                 markStation(id.getMcc(),id.getMnc(),id.getTac(),id.getCi());
@@ -277,10 +292,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     currentmnc = id.getMnc();
                     currentmcc = id.getMcc();
                     currentcellid = id.getCi();
+                    previouslac = currentlac;
                     currentlac = id.getTac();
+
                 }
 
-            } else if ((tech == "GSM") & (info instanceof CellInfoGsm)) {
+            } else if ((tech.equals("GSM")) & (info instanceof CellInfoGsm)) {
                 CellInfoGsm cellInfoGsm = (CellInfoGsm) info;
                 CellIdentityGsm id = cellInfoGsm.getCellIdentity();
                 markStation(id.getMcc(),id.getMnc(),id.getLac(),id.getCid());
@@ -289,6 +306,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     currentmnc = id.getMnc();
                     currentmcc = id.getMcc();
                     currentcellid = id.getCid();
+                    previouslac = currentlac;
                     currentlac = id.getLac();
                 }
             }
