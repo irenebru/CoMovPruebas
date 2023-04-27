@@ -31,6 +31,9 @@ public class DataPoint {
     @SerializedName("cellid")
     @Expose
     private int cellid;
+    @SerializedName("tech")
+    @Expose
+    private String tech;
 
     private static Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
     /**
@@ -49,8 +52,9 @@ public class DataPoint {
      * @param cellid
      * @param signal
      * @param lac
+     * @param tech
      */
-    public DataPoint(int idPoint, int signal, int stage, int mnc, int mcc, int lac, int cellid) {
+    public DataPoint(int idPoint, int signal, int stage, int mnc, int mcc, int lac, int cellid, String tech ) {
         super();
         this.idPoint = idPoint;
         this.signal = signal;
@@ -59,6 +63,7 @@ public class DataPoint {
         this.mcc = mcc;
         this.lac = lac;
         this.cellid = cellid;
+        this.tech = tech;
     }
 
     public int getIdPoint() {
@@ -105,6 +110,8 @@ public class DataPoint {
         return lac;
     }
 
+    public String getTech() { return tech; }
+
     public void setLac(int lac) {
         this.lac = lac;
     }
@@ -116,6 +123,8 @@ public class DataPoint {
     public void setCellid(int cellid) {
         this.cellid = cellid;
     }
+
+    public void setTech(String tech) {this.tech = tech;}
 
     public JsonElement toJson(){
         return gson.toJsonTree(this);

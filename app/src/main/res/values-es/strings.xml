@@ -11,5 +11,6 @@
     <string name="ToastStage">Nueva Etapa creada. Estás en la etapa</string>
     <string name="Store">Guardar Datos</string>
     <string name="ToastStore">Datos guardados</string>
+    <string name="SelectTech">Selecciona la tecnología GSM/LTE</string>
 
 </resources>

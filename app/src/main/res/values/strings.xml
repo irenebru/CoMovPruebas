@@ -10,5 +10,6 @@
     <string name="ToastStage">New stage created. Now in stage</string>
     <string name="Store">Store Data</string>
     <string name="ToastStore">Data stored</string>
+    <string name="SelectTech">Select the Technology GSM/LTE</string>
 
 </resources>

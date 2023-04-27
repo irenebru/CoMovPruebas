@@ -11,8 +11,10 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.CellIdentityGsm;
 import android.telephony.CellIdentityLte;
 import android.telephony.CellInfo;
+import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -79,6 +81,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private List<DataPoint> listdatapoints;
 
+    private String tech;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(binding.getRoot());
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         queue = Volley.newRequestQueue(this);
+        Bundle extras = getIntent().getExtras();
+        tech = extras.getString("tech");
         stage =1;
         idpoint = 0;
         currentcellid = 0;
@@ -135,7 +141,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(stage%2==0)color=Color.BLACK;
                 else color=Color.WHITE;
                 idpoint++;
-                listdatapoints.add(new DataPoint(idpoint,currentsignal,stage,currentmnc,currentmcc,currentlac,currentcellid));
+                listdatapoints.add(new DataPoint(idpoint,currentsignal,stage,currentmnc,currentmcc,currentlac,currentcellid,tech));
                 Circle cirlce = mMap.addCircle(new CircleOptions()
                         .center(new LatLng(location.getLatitude(), location.getLongitude()))
                         .radius(25)
@@ -261,29 +267,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         List<CellInfo> cellInfoList = telephonyManager.getAllCellInfo();
         //text.append("Found ").append(cellInfoList.size()).append(" cells\n");
         for (CellInfo info : cellInfoList) {
-            if (info instanceof CellInfoLte) {
+            if ((tech == "LTE") & info instanceof CellInfoLte) {
                 CellInfoLte cellInfoLte = (CellInfoLte) info;
                 CellIdentityLte id = cellInfoLte.getCellIdentity();
                 markStation(id.getMcc(),id.getMnc(),id.getTac(),id.getCi());
-                // text.append("LTE ID:{cid: ").append(id.getCi());
-                //  if (Build.VERSION.SDK_INT< Build.VERSION_CODES.P){
-                //     text.append(" mcc: ").append(id.getMcc());
-                //    text.append(" mnc: ").append(id.getMnc());
-                //}else {
-                //   text.append(" mcc: ").append(id.getMccString());
-                //   text.append(" mnc: ").append(id.getMncString());
-                //}
-                //text.append(" tac: ").append(id.getTac());
-                // text.append("} Level: ").append(cellInfoLte.getCellSignalStrength().getLevel()).append("\n");
-                if (cellInfoLte.getCellSignalStrength().getLevel() > max)
+;
+                if (cellInfoLte.getCellSignalStrength().getLevel() > max) {
                     max = cellInfoLte.getCellSignalStrength().getLevel();
                     currentmnc = id.getMnc();
                     currentmcc = id.getMcc();
                     currentcellid = id.getCi();
                     currentlac = id.getTac();
+                }
 
+            } else if ((tech == "GSM") & (info instanceof CellInfoGsm)) {
+                CellInfoGsm cellInfoGsm = (CellInfoGsm) info;
+                CellIdentityGsm id = cellInfoGsm.getCellIdentity();
+                markStation(id.getMcc(),id.getMnc(),id.getLac(),id.getCid());
+                if (cellInfoGsm.getCellSignalStrength().getLevel() > max) {
+                    max = cellInfoGsm.getCellSignalStrength().getLevel();
+                    currentmnc = id.getMnc();
+                    currentmcc = id.getMcc();
+                    currentcellid = id.getCid();
+                    currentlac = id.getLac();
+                }
             }
-            // textView.setText(text);
+
         }
         return max;
     }
