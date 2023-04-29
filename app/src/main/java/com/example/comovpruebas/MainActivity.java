@@ -30,10 +30,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("tech",tech);
         startActivity(intent);
     }
-    public void openTelephonyActivity(View v){
-        Intent intent = new Intent(this,TelephonyActivity.class);
-        startActivity(intent);
-    }
+
     public void onPressedButton1(View v) {
         openMapsActivity(v,tech);
     }

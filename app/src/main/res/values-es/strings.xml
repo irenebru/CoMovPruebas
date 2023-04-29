@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CoMovPruebas</string>
-    <string name="Primera_actividad">Primera Actividad</string>
-    <string name="Segunda_actividad">Segunda Actividad</string>
-    <string name="buttonchange">Boton</string>
     <string name="title_activity_maps">Mapa Actividad</string>
     <string name="BotonMapa">Abrir Mapa</string>
     <string name="Antenna">Antena</string>
