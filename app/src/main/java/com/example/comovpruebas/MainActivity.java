@@ -23,15 +23,8 @@ public class MainActivity extends AppCompatActivity {
         check.setChecked(true);
 
     }
-    public void openSecondActivity(View v){
-        Intent intent = new Intent(this, SecondActivity.class);
-        startActivity(intent);
 
-    }
-    public void openLocActivity(View v){
-        Intent intent = new Intent(this,LocationActivity.class);
-        startActivity(intent);
-    }
+
     public void openMapsActivity(View v,String tech){
         Intent intent = new Intent(this,MapsActivity.class);
         intent.putExtra("tech",tech);

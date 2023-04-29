@@ -41,14 +41,8 @@
             android:screenOrientation="portrait"
             android:exported="false"
             android:label="@string/title_activity_maps" />
-        <activity
-            android:name=".LocationActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity
-            android:name=".SecondActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
