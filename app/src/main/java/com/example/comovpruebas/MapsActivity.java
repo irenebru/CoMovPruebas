@@ -79,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int currentcellid;
     private int currentsignal;
 
-    private int previouslac;
+    private int previouscellid;
 
     private static final String FILENAME="datapoints.json";
 
@@ -104,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         currentlac = 0;
         currentmcc = 0;
         currentmnc = 0;
-        previouslac = 0;
+        previouscellid = 0;
         listdatapoints = new LinkedList<>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -149,7 +149,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 List<PatternItem> patterns;
                 Gap gap = new Gap(20);
                 Dash dash = new Dash(20);
-                if(currentlac!=previouslac) {
+                if(currentcellid!=previouscellid) {
                     patterns = new LinkedList<>();
                     patterns.add(dash);
                     patterns.add(gap);
@@ -293,8 +293,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     max = cellInfoLte.getCellSignalStrength().getLevel();
                     currentmnc = id.getMnc();
                     currentmcc = id.getMcc();
+                    previouscellid = currentcellid;
                     currentcellid = id.getCi();
-                    previouslac = currentlac;
                     currentlac = id.getTac();
 
                 }
@@ -307,8 +307,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     max = cellInfoGsm.getCellSignalStrength().getLevel();
                     currentmnc = id.getMnc();
                     currentmcc = id.getMcc();
+                    previouscellid = currentcellid;
                     currentcellid = id.getCid();
-                    previouslac = currentlac;
                     currentlac = id.getLac();
                 }
             }
