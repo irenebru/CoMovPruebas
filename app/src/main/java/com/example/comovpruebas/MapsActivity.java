@@ -140,23 +140,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         g = 102;
                         b = 51;
                         break;
+                    case -100:
+                        break;
                 }
-                location = locationResult.getLastLocation();
-                int color;
-                if(stage%2==0)color=Color.BLACK;
-                else color=Color.WHITE;
-                idpoint++;
-                List<PatternItem> patterns;
-                Gap gap = new Gap(20);
-                Dash dash = new Dash(20);
-                if(currentcellid!=previouscellid) {
-                    patterns = new LinkedList<>();
-                    patterns.add(dash);
-                    patterns.add(gap);
-                }
-                else patterns = null;
-                listdatapoints.add(new DataPoint(idpoint,currentsignal,stage,currentmnc,currentmcc,currentlac,currentcellid,tech));
-                Circle cirlce = mMap.addCircle(new CircleOptions()
+                if(currentsignal!=-100){
+                    location = locationResult.getLastLocation();
+                    int color;
+                    if(stage%2==0)color=Color.BLACK;
+                    else color=Color.WHITE;
+                    idpoint++;
+                    List<PatternItem> patterns;
+                    Gap gap = new Gap(20);
+                    Dash dash = new Dash(20);
+                    if(currentcellid!=previouscellid) {
+                        patterns = new LinkedList<>();
+                        patterns.add(dash);
+                        patterns.add(gap);
+                    }
+                    else patterns = null;
+                    listdatapoints.add(new DataPoint(idpoint,currentsignal,stage,currentmnc,currentmcc,currentlac,currentcellid,tech));
+                    Circle cirlce = mMap.addCircle(new CircleOptions()
                         .center(new LatLng(location.getLatitude(), location.getLongitude()))
                         .radius(25)
                         .strokeColor(color)
@@ -166,6 +169,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         ;
 
 
+                }
             }
         };
     }
@@ -182,11 +186,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydn"));
-        // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         showPosition();
         showLocationUpdate();
 
@@ -212,9 +211,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case 0: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     showPosition();
+                    showLocationUpdate();
                 } else {
                     Toast.makeText(this, "Need permission to work", Toast.LENGTH_SHORT).show();
                 }
+            }
+            case 1: if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                Toast.makeText(this, "Need permission to work2", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -276,9 +279,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public int CellInfo() {
         StringBuilder text = new StringBuilder();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, 0);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, 1);
 
-            return 0;
+            return -100;
         }
         int max = 0;
         List<CellInfo> cellInfoList = telephonyManager.getAllCellInfo();
