@@ -164,7 +164,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .radius(25)
                         .strokeColor(color)
                         .strokePattern(patterns)
-                        .clickable(true)
                         .fillColor(Color.rgb(r, g, b)))
                         ;
 
